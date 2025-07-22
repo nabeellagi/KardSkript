@@ -170,13 +170,24 @@ cardSet biology {
             readOnly: false,
             quickSuggestions: false,
           }}
-          onMount={(editor, monaco) => {
+          onMount={async (editor, monaco) => {
+            // Load the theme JSON dynamically
+            const response = await fetch("/dracula-monaco-theme.json");
+            const theme = await response.json();
+
+            monaco.editor.defineTheme("dracula", theme);
+            monaco.editor.setTheme("dracula");
+
             monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions(
               {
                 noSemanticValidation: true,
                 noSyntaxValidation: true,
               }
             );
+
+            editor.updateOptions({
+              renderValidationDecorations: "off",
+            });
           }}
         />
       </section>
