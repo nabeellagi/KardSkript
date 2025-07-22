@@ -140,14 +140,6 @@ cardSet biology {
           beautifully simple, script-based flashcard tool to help you learn,
           create, and share knowledge.
         </p>
-        <div ref={btnRef} className="flex justify-center space-x-4 pt-4">
-          <button className="btn btn-primary btn-lg shadow-lg hover:shadow-primary hover:scale-105 transition-transform duration-300 flex items-center">
-            <FaRocket className="mr-2" /> Try Now
-          </button>
-          <button className="btn btn-outline btn-secondary btn-lg hover:scale-105 transition-transform duration-300 flex items-center">
-            <FaBookOpen className="mr-2" /> Learn More
-          </button>
-        </div>
       </section>
 
       {/* Monaco Editor Block */}
@@ -190,6 +182,14 @@ cardSet biology {
             });
           }}
         />
+        <div ref={btnRef} className="flex justify-center space-x-4 pt-4">
+          <button className="btn btn-primary btn-lg shadow-lg hover:shadow-primary hover:scale-105 transition-transform duration-300 flex items-center">
+            <FaRocket className="mr-2" /> Try Now
+          </button>
+          <button className="btn btn-outline btn-secondary btn-lg hover:scale-105 transition-transform duration-300 flex items-center">
+            <FaBookOpen className="mr-2" /> Learn More
+          </button>
+        </div>
       </section>
 
       <section className="max-w-6xl mx-auto px-6 py-12 space-y-12">
