@@ -3,8 +3,11 @@ import { gsap } from "gsap";
 import { Editor } from "@monaco-editor/react";
 import { FaRocket, FaBookOpen, FaDownload } from "react-icons/fa";
 import { DndContext, useDroppable } from "@dnd-kit/core";
+import { parseKardScript } from "../utils/kardParser";
 
 export default function HomePage() {
+  const [output, setOutput] = useState(null);
+
   const heroRef = useRef(null);
   const titleRef = useRef(null);
   const descRef = useRef(null);
@@ -101,12 +104,11 @@ export default function HomePage() {
     });
   }, []);
 
-  const defaultCode = `cardSet biology {
-  card {
-    front: "What is DNA?"
-    back: "It stores genetic information."
-  }
-}`;
+  const defaultCode = `
+flash({
+    front : "What is a computer?",
+    back : "computer is a device?"
+})`;
 
   const handleDownload = () => {
     if (!editorRef.current) return;
@@ -132,6 +134,19 @@ export default function HomePage() {
     }
     const text = await file.text();
     editorInstance?.setValue?.(text);
+  };
+
+  const handleRun = () => {
+    if (!editorRef.current) return;
+    const code = editorRef.current.getValue?.();
+    if (!code) return;
+
+    try {
+      const parsedOutput = parseKardScript(code);
+      setOutput(parsedOutput);
+    } catch (err) {
+      setOutput({ error: err.message });
+    }
   };
 
   return (
@@ -227,6 +242,7 @@ export default function HomePage() {
                 {
                   noSemanticValidation: true,
                   noSyntaxValidation: true,
+                  noSuggestionDiagnostics:true
                 }
               );
               editor.updateOptions({
@@ -238,9 +254,13 @@ export default function HomePage() {
             ref={btnRef}
             className="flex flex-wrap justify-center gap-4 pt-4"
           >
-            <button className="btn btn-primary btn-lg shadow-lg hover:shadow-primary hover:scale-105 transition-transform duration-300 flex items-center">
+            <button
+              onClick={handleRun}
+              className="btn btn-primary btn-lg shadow-lg hover:shadow-primary hover:scale-105 transition-transform duration-300 flex items-center"
+            >
               <FaRocket className="mr-2" /> Run
             </button>
+
             <button className="btn btn-outline btn-secondary btn-lg hover:scale-105 transition-transform duration-300 flex items-center">
               <FaBookOpen className="mr-2" /> Learn More
             </button>
@@ -251,6 +271,17 @@ export default function HomePage() {
               <FaDownload className="mr-2" /> Download
             </button>
           </div>
+          <p className="text-sm text-gray-400 mt-2">
+            {output ? (
+              <pre className="bg-black/70 p-4 rounded text-left overflow-auto text-green-300 text-xs">
+                {output.error
+                  ? `❌ Error: ${output.error}`
+                  : JSON.stringify(output, null, 2)}
+              </pre>
+            ) : (
+              "Click 'Run' to parse your script."
+            )}
+          </p>
         </section>
         <section className="max-w-6xl mx-auto px-6 py-12 space-y-12">
           {/* Section 1 */}
