@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Image Uploader — KardSkrip Image Agent</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <style>
+    .dropzone {
+      border: 2px dashed #00d1b2;
+      border-radius: 10px;
+      padding: 3rem;
+      text-align: center;
+      transition: background-color 0.3s ease;
+    }
+    .dropzone.dragover {
+      background-color: #f0faff;
+    }
+    .is-hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title has-text-centered">KardSkrip ImageAgent</h1>
+      <h2 class="subtitle has-text-centered">Drag and drop images below to upload</h2>
+
+      <div id="dropzone" class="dropzone">
+        <p><strong>Drop files here</strong> or click to upload</p>
+        <input id="fileInput" class="is-hidden" type="file" />
+      </div>
+
+      <div id="uploadStatus" class="notification is-info mt-4 is-hidden">Uploading...</div>
+    </div>
+  </section>
+
+  <script>
+    const dropzone = document.getElementById("dropzone");
+    const fileInput = document.getElementById("fileInput");
+    const statusBox = document.getElementById("uploadStatus");
+
+    dropzone.addEventListener("click", () => fileInput.click());
+
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropzone.classList.add("dragover");
+    });
+
+    dropzone.addEventListener("dragleave", () => {
+      dropzone.classList.remove("dragover");
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropzone.classList.remove("dragover");
+
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        uploadFile(files[0]);
+      }
+    });
+
+    fileInput.addEventListener("change", (e) => {
+      if (e.target.files.length > 0) {
+        uploadFile(e.target.files[0]);
+      }
+    });
+
+    async function uploadFile(file) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      statusBox.classList.remove("is-hidden");
+      statusBox.classList.replace("is-success", "is-info");
+      statusBox.innerText = `Uploading ${file.name}...`;
+
+      try {
+        const res = await fetch("/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          statusBox.classList.replace("is-info", "is-success");
+          statusBox.innerText = `✅ Uploaded: ${data.filename}`;
+        } else {
+          statusBox.classList.replace("is-info", "is-danger");
+          statusBox.innerText = `❌ Error: ${data.error}`;
+        }
+      } catch (err) {
+        statusBox.classList.replace("is-info", "is-danger");
+        statusBox.innerText = "❌ Upload failed.";
+      }
+    }
+  </script>
+</body>
+</html>
