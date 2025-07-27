@@ -14,8 +14,15 @@ import ImageStatusChecker from "./ImageStatusChecker";
 import Board from "./Board";
 import "../styles/global.css";
 
+const defaultCode = `
+flash({
+    front : "What is a computer?",
+    back : "computer is a device?"
+})`;
+
 export default function HomePage() {
   const [output, setOutput] = useState(null);
+  const [code, setCode] = useState(defaultCode);
 
   const heroRef = useRef(null);
   const titleRef = useRef(null);
@@ -118,17 +125,17 @@ export default function HomePage() {
     });
   }, []);
 
-  const defaultCode = `
-flash({
-    front : "What is a computer?",
-    back : "computer is a device?"
-})`;
+  const handleRun = () => {
+    try {
+      const parsedOutput = parseKardScript(code);
+      setOutput(parsedOutput);
+    } catch (err) {
+      setOutput({ error: err.message });
+    }
+  };
 
   const handleDownload = () => {
-    if (!editorRef.current) return;
-    const value = editorRef.current.getValue?.();
-    if (!value) return;
-    const blob = new Blob([value], { type: "text/plain" });
+    const blob = new Blob([code], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -147,20 +154,7 @@ flash({
       return;
     }
     const text = await file.text();
-    editorInstance?.setValue?.(text);
-  };
-
-  const handleRun = () => {
-    if (!editorRef.current) return;
-    const code = editorRef.current.getValue?.();
-    if (!code) return;
-
-    try {
-      const parsedOutput = parseKardScript(code);
-      setOutput(parsedOutput);
-    } catch (err) {
-      setOutput({ error: err.message });
-    }
+    setCode(text); // update state
   };
 
   return (
@@ -199,111 +193,113 @@ flash({
             }}
           />
         </div>
-        {!isFullScreen && (
-          <>
-            {/* Hero Section */}
-            <section
-              ref={heroRef}
-              className="text-center max-w-3xl mx-auto space-y-6 relative z-10"
+        <>
+          {/* Hero Section */}
+          <section
+            ref={heroRef}
+            className="text-center max-w-3xl mx-auto space-y-6 relative z-10"
+          >
+            <h1
+              ref={titleRef}
+              className="text-4xl md:text-6xl font-extrabold leading-tight text-accent"
             >
-              <h1
-                ref={titleRef}
-                className="text-4xl md:text-6xl font-extrabold leading-tight text-accent"
-              >
-                Create Flashcards with Code
-              </h1>
-              <p
-                ref={descRef}
-                className="text-lg md:text-xl text-white/80 font-medium"
-              >
-                Introducing{" "}
-                <span className="text-secondary font-bold">KardSkrip</span> — a
-                beautifully simple, script-based flashcard tool to help you
-                learn, create, and share knowledge.
-              </p>
-            </section>
-
-            {/* Monaco Editor */}
-            <section
-              ref={editorContainerRef}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={handleDrop}
-              className="max-w-6xl mx-auto w-full bg-black/80 rounded-xl shadow-2xl border border-gray-700 overflow-hidden transition-transform duration-700 relative"
+              Create Flashcards with Code
+            </h1>
+            <p
+              ref={descRef}
+              className="text-lg md:text-xl text-white/80 font-medium"
             >
-              {isDragging && (
-                <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-white text-3xl font-bold z-50">
-                  Drop it like it's hot 🔥
-                </div>
-              )}
-              <Editor
-                height="500px"
-                defaultLanguage="javascript"
-                defaultValue={defaultCode}
-                theme="vs-dark"
-                options={{
-                  fontSize: 16,
-                  minimap: { enabled: false },
-                  scrollBeyondLastLine: false,
-                  automaticLayout: true,
-                  disableLayerHinting: true,
-                  contextmenu: false,
-                  readOnly: false,
-                  quickSuggestions: false,
-                }}
-                onMount={async (editor, monaco) => {
-                  editorRef.current = editor;
-                  setEditorInstance(editor);
-                  const response = await fetch("/dracula-monaco-theme.json");
-                  const theme = await response.json();
-                  monaco.editor.defineTheme("dracula", theme);
-                  monaco.editor.setTheme("dracula");
-                  monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions(
-                    {
-                      noSemanticValidation: true,
-                      noSyntaxValidation: true,
-                      noSuggestionDiagnostics: true,
-                    }
-                  );
-                  editor.updateOptions({
-                    renderValidationDecorations: "off",
-                  });
-                }}
-              />
-              <div
-                ref={btnRef}
-                className="flex flex-wrap justify-center gap-4 pt-4"
-              >
-                <button
-                  onClick={handleRun}
-                  className="btn btn-primary btn-lg shadow-lg hover:shadow-primary hover:scale-105 transition-transform duration-300 flex items-center"
-                >
-                  <FaRocket className="mr-2" /> Run
-                </button>
+              Introducing{" "}
+              <span className="text-secondary font-bold">KardSkrip</span> — a
+              beautifully simple, script-based flashcard tool to help you learn,
+              create, and share knowledge.
+            </p>
+          </section>
 
-                <button className="btn btn-outline btn-secondary btn-lg hover:scale-105 transition-transform duration-300 flex items-center">
-                  <FaBookOpen className="mr-2" /> Learn More
-                </button>
-                <button
-                  onClick={handleDownload}
-                  className="btn btn-accent btn-lg shadow-lg hover:shadow-accent hover:scale-105 transition-transform duration-300 flex items-center"
-                >
-                  <FaDownload className="mr-2" /> Download
-                </button>
+          {/* Monaco Editor */}
+          <section
+            ref={editorContainerRef}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleDrop}
+            className="max-w-6xl mx-auto w-full bg-black/80 rounded-xl shadow-2xl border border-gray-700 overflow-hidden transition-transform duration-700 relative"
+          >
+            {isDragging && (
+              <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-white text-3xl font-bold z-50">
+                Drop it like it's hot 🔥
               </div>
-              <p className="text-sm text-gray-400 mt-2">
-                {output ? (
-                  <pre className="bg-black/70 p-4 rounded text-left overflow-auto text-green-300 text-xs">
-                    {output.error
-                      ? `Error: ${output.error}`
-                      : JSON.stringify(output, null, 2)}
-                  </pre>
-                ) : (
-                  "Click 'Run' to parse your script!"
-                )}
-              </p>
-            </section>
-          </>
-        )}
+            )}
+            <Editor
+              height="500px"
+              language="javascript"
+              value={code}
+              onChange={(value) => setCode(value)}
+              theme="vs-dark"
+              options={{
+                fontSize: 16,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                automaticLayout: true,
+                disableLayerHinting: true,
+                contextmenu: false,
+                readOnly: false,
+                quickSuggestions: false,
+              }}
+              onMount={async (editor, monaco) => {
+                editorRef.current = editor;
+                setEditorInstance(editor);
+
+                const response = await fetch("/dracula-monaco-theme.json");
+                const theme = await response.json();
+                monaco.editor.defineTheme("dracula", theme);
+                monaco.editor.setTheme("dracula");
+
+                monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions(
+                  {
+                    noSemanticValidation: true,
+                    noSyntaxValidation: true,
+                    noSuggestionDiagnostics: true,
+                  }
+                );
+
+                editor.updateOptions({
+                  renderValidationDecorations: "off",
+                });
+              }}
+            />
+            <div
+              ref={btnRef}
+              className="flex flex-wrap justify-center gap-4 pt-4"
+            >
+              <button
+                onClick={handleRun}
+                className="btn btn-primary btn-lg shadow-lg hover:shadow-primary hover:scale-105 transition-transform duration-300 flex items-center"
+              >
+                <FaRocket className="mr-2" /> Run
+              </button>
+
+              <button className="btn btn-outline btn-secondary btn-lg hover:scale-105 transition-transform duration-300 flex items-center">
+                <FaBookOpen className="mr-2" /> Learn More
+              </button>
+              <button
+                onClick={handleDownload}
+                className="btn btn-accent btn-lg shadow-lg hover:shadow-accent hover:scale-105 transition-transform duration-300 flex items-center"
+              >
+                <FaDownload className="mr-2" /> Download
+              </button>
+            </div>
+            <p className="text-sm text-gray-400 mt-2">
+              {output ? (
+                <pre className="bg-black/70 p-4 rounded text-left overflow-auto text-green-300 text-xs">
+                  {output.error
+                    ? `Error: ${output.error}`
+                    : JSON.stringify(output, null, 2)}
+                </pre>
+              ) : (
+                "Click 'Run' to parse your script!"
+              )}
+            </p>
+          </section>
+        </>
         <section
           className={`flex flex-col items-center justify-center transition-all duration-500 ${
             isFullScreen

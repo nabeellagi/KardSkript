@@ -9,7 +9,7 @@ const CARD_HEIGHT = 400;
 const defaultCardStyle = {
   bg_color: "#FF2DD1",
   fontSize_front: 24,
-  fontSize_back: 40,
+  fontSize_back: 20,
   x: 100,
   y: 10,
 };
@@ -57,7 +57,6 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
               y: positionRef.current.y,
             });
 
-            // Optional: Add tilt effect based on horizontal movement
             const tilt = Math.max(Math.min(event.dx * 2, 15), -15);
             gsap.to(el, {
               rotationZ: tilt,
@@ -84,7 +83,7 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
     }
   }, [isFlipped, cardData.front, cardData.back]);
 
-  const renderContent = (text, imagePath, ref) => {
+  const renderContent = (text, imagePath, ref, equationText) => {
     return (
       <div
         ref={ref}
@@ -97,11 +96,22 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
             className="max-w-full max-h-52 object-contain mx-auto"
           />
         )}
-        <div className="w-full flex justify-end">
+        <div className="w-full flex flex-col gap-1 text-white p-2">
           <div
-            className="prose text-white text-right p-2 whitespace-pre-wrap"
+            className="prose text-right whitespace-pre-wrap"
             dangerouslySetInnerHTML={{ __html: text }}
           />
+          {equationText && (
+            <div
+              className="overflow-x-auto text-right mt-1"
+              style={{ fontSize: "0.85em" }}
+            >
+              <div
+                className="inline-block px-2"
+                dangerouslySetInnerHTML={{ __html: equationText }}
+              />
+            </div>
+          )}
         </div>
       </div>
     );
@@ -136,7 +146,7 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
             zIndex: isFlipped ? 0 : 2,
           }}
         >
-          {renderContent(cardData.front, cardData.imageFront, frontRef)}
+          {renderContent(cardData.front, cardData.imageFront, frontRef, cardData.equationFront)}
         </div>
 
         <div
@@ -149,7 +159,7 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
             zIndex: isFlipped ? 2 : 0,
           }}
         >
-          {renderContent(cardData.back, cardData.imageBack, backRef)}
+          {renderContent(cardData.back, cardData.imageBack, backRef, cardData.equationBack)}
         </div>
       </div>
     </div>
