@@ -16,7 +16,7 @@ OUTPUT
     }
 ]
 
-#Multiline
+#Multiline and adding breaks
 
 INPUT 
 
@@ -32,7 +32,7 @@ OUTPUT
 
 [
     {
-        front : "What is a computer? \n What is it?",
+        front : "What is a computer? \nWhat is it?",
         back : "computer is a device?"
     }
 ]
@@ -73,14 +73,16 @@ flash({
   front: "Derive $$x^3$$",
   back: "$$\\frac{d}{dx} x^3 = 3x^2$$",
   color: "#E0F7FA",
-  font: "Comic Sans MS"
+  font: "Comic Sans MS",
+  fontSize:12
 })
 
 flash({
   front: "hELLO",
   back: "wORLD",
   color: "#1e1e1e",
-  font: "Comic Sans MS"
+  font: "Comic Sans MS",
+  fontSize:12
 })
 
 OUTPUT
@@ -99,31 +101,3 @@ OUTPUT
         font: "Comic Sans MS"
     }
 ]
-
-# LOOP AND TABLES
-
-INPUT 
-
-table mycards = [
-  "What is the capital of France?": "Paris",
-  "
-  Solve: $$\\int x dx$$": 
-  "Answer: $$\\frac{1}{2}x^2 + C$$"
-]
-
-foreach test as card {
-  flash({ front: card.key, back: card.value })
-}
-
-OUTPUT
-[
-    {
-        front: "What is the capital of France?",
-        back: "Paris"
-    },
-    {
-        front : "Solve: $$\\int x dx$$"
-        back : "Answer: $$\\frac{1}{2}x^2 + C$$"
-    }
-]
-
