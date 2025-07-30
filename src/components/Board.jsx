@@ -14,7 +14,7 @@ export default function Board({ data }) {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const id = Date.now(); // simple unique id
+    const id = Date.now();
 
     setRipples((prev) => [...prev, { id, x, y }]);
   }, []);
@@ -24,8 +24,11 @@ export default function Board({ data }) {
   };
 
   return (
-    <div className="relative w-screen h-screen bg-base-100 overflow-hidden">
-      {/* 📌 Static background grid layer */}
+    <div
+      ref={boardRef}
+      className="relative w-screen h-screen bg-base-100 overflow-hidden"
+      onClick={handleClick}
+    >
       <div
         className="absolute inset-0 z-0 pointer-events-none"
         style={{
@@ -34,12 +37,10 @@ export default function Board({ data }) {
             linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)
           `,
           backgroundSize: "20px 20px",
-          backgroundPosition: "0px 0px",
-          backgroundRepeat: "repeat",
         }}
       />
 
-      {/* 📦 Transformable content layer */}
+      {/* 🌀 Zoomable content */}
       <TransformWrapper
         minScale={0.3}
         maxScale={3}
@@ -52,11 +53,7 @@ export default function Board({ data }) {
         centerZoomedOut={false}
       >
         <TransformComponent wrapperClass="w-full h-full">
-          <div
-            ref={boardRef}
-            className="relative z-10 w-[100vw] h-[100vh] select-none"
-            onClick={handleClick}
-          >
+          <div className="relative z-10 w-[100vw] h-[100vh] select-none">
             {(data || []).map((card, index) => (
               <FlashCard
                 key={index}
@@ -66,18 +63,20 @@ export default function Board({ data }) {
                 onDragEnd={() => setIsDraggingCard(false)}
               />
             ))}
-
-            {ripples.map(({ id, x, y }) => (
-              <Ripple
-                key={id}
-                x={x}
-                y={y}
-                onComplete={() => handleRippleComplete(id)}
-              />
-            ))}
           </div>
         </TransformComponent>
       </TransformWrapper>
+
+      <div className="absolute inset-0 z-50 pointer-events-none">
+        {ripples.map(({ id, x, y }) => (
+          <Ripple
+            key={id}
+            x={x}
+            y={y}
+            onComplete={() => handleRippleComplete(id)}
+          />
+        ))}
+      </div>
     </div>
   );
 }
