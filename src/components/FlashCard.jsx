@@ -29,6 +29,18 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
 
   const handleDoubleClick = () => setIsFlipped((prev) => !prev);
 
+  const reRenderMath = () => {
+    if (!window.renderMathInElement || !cardRef.current) return;
+
+    renderMathInElement(cardRef.current, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\(", right: "\\)", display: false },
+      ],
+      throwOnError: false,
+    });
+  };
+
   useEffect(() => {
     const el = cardRef.current;
     if (!el) return;
@@ -68,8 +80,9 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
             gsap.to(el, {
               rotationZ: 0,
               duration: 0.3,
-              ease: "elastic.out(1, 0.4)",
+              ease: "elastic.out(1, 0.6)",
             });
+            setTimeout(reRenderMath, 0);
           },
         },
       })
@@ -81,6 +94,14 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
       if (frontRef.current) renderMathInElement(frontRef.current);
       if (backRef.current) renderMathInElement(backRef.current);
     }
+  }, [isFlipped, cardData.front, cardData.back]);
+
+  useEffect(() => {
+    reRenderMath();
+  }, []);
+
+  useEffect(() => {
+    reRenderMath(); // On flip or content change
   }, [isFlipped, cardData.front, cardData.back]);
 
   const renderContent = (text, imagePath, ref, equationText) => {
@@ -106,10 +127,16 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
               className="overflow-x-auto text-right mt-1"
               style={{ fontSize: "0.85em" }}
             >
-              <div
-                className="inline-block px-2"
-                dangerouslySetInnerHTML={{ __html: equationText }}
-              />
+              {equationText && (
+                <div
+                  className="overflow-x-auto text-right mt-1"
+                  style={{ fontSize: "0.85em" }}
+                >
+                  <div className="inline-block px-2 katex-render-target">
+                    {equationText}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -146,7 +173,12 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
             zIndex: isFlipped ? 0 : 2,
           }}
         >
-          {renderContent(cardData.front, cardData.imageFront, frontRef, cardData.equationFront)}
+          {renderContent(
+            cardData.front,
+            cardData.imageFront,
+            frontRef,
+            cardData.equationFront
+          )}
         </div>
 
         <div
@@ -159,7 +191,12 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
             zIndex: isFlipped ? 2 : 0,
           }}
         >
-          {renderContent(cardData.back, cardData.imageBack, backRef, cardData.equationBack)}
+          {renderContent(
+            cardData.back,
+            cardData.imageBack,
+            backRef,
+            cardData.equationBack
+          )}
         </div>
       </div>
     </div>
