@@ -55,5 +55,10 @@ def list_images():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    print(f"Serving images from: {IMAGE_DIR}")
+    print("="*40)
+    print("📁 Local Image Agent is starting up...")
+    print(f"📂 Serving images from: {IMAGE_DIR}")
+    print("🌐 Visit http://127.0.0.1:5678 in your browser to upload or view images.")
+    print("🔄 Use /ping to check if the server is alive.")
+    print("="*40)
     app.run(host='127.0.0.1', port=5678)
