@@ -1,0 +1,79 @@
+---
+import Board from "../../../components/Board";
+import DocLayout from "../../../layouts/DocLayout.astro";
+import CodeSnippet from "../../../components/CodeSnippet.jsx";
+
+var code1 = `flash({
+  front : "Hello!",
+  back : "World!",
+})
+
+flash({
+  front : "Start making!",
+  back : "World!",
+  bg_color : "#652dffff",
+})`;
+
+var code2 = `flash({
+  front : "<h2 class='text-xl font-bold text-blue-600'>Hello, KardSkript!</h2>",
+  back : "<p class='text-green-600'>You can use <b>HTML</b> and <i>Tailwind</i> here!</p>",
+  bg_color : "#fef3c7", // soft yellow
+})
+
+flash({
+  front : "<p class='text-pink-500'>✨ Styling is fun!</p>",
+  back : "<ul class='list-disc list-inside text-sm text-gray-700'>
+            <li>Use colors</li>
+            <li>Add fonts</li>
+            <li>Experiment freely</li>
+          </ul>",
+  bg_color : "#e0f2fe", // light sky blue
+})`;
+---
+
+<DocLayout title="Scripting Basics">
+  <!-- Section 1 -->
+  <section id="HelloWorld" class="prose max-w-none text-base/9 mb-12">
+    <h2 class="text-2xl font-semibold">How to create your own Flashcard</h2>
+
+    <p>
+      KardSkript uses its own scripting style called <code>.Kard</code>, which can be used to create
+      flashcards on this site. It's pretty much easy
+      to do even if you have 0 experience in coding! Here's how it works on basics level!
+    </p>
+
+    <ul class="list-decimal pl-8 space-y-1 leading-tight text-base">
+      <li>
+        Start by writing a <code>flash()</code> block. Inside it, you'll define the
+        <span class="font-semibold">front</span> (question/term) and
+        <span class="font-semibold">back</span> (answer/definition) of your flashcard.
+      </li>
+      <li>
+        (Optional) Add extra styling like
+        <code>bg_color</code> to make your cards unique.
+      </li>
+      <li>
+        Save and run your script — your flashcards will appear instantly on the
+        board!
+      </li>
+    </ul>
+
+    <div class="border border-base rounded-lg p-4 mb-6 w-[60vw] overflow-x-hidden">
+      <CodeSnippet client:load code={code1} />
+      <Board
+        client:load
+        data={[
+          {
+            front: "Hello!",
+            back: "World!",
+          },
+          {
+            front: "Start making!",
+            back: "World!",
+            bg_color: "#652dffff",
+          },
+        ]}
+      />
+    </div>
+  </section>
+</DocLayout>

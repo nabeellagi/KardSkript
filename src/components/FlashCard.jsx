@@ -3,6 +3,9 @@ import interact from "interactjs";
 import gsap from "gsap";
 import "../styles/global.css";
 
+import katex from "katex";
+import "katex/dist/katex.min.css";
+
 const CARD_WIDTH = 300;
 const CARD_HEIGHT = 400;
 
@@ -28,18 +31,6 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
   const cardData = { ...defaultCardStyle, ...card };
 
   const handleDoubleClick = () => setIsFlipped((prev) => !prev);
-
-  const reRenderMath = () => {
-    if (!window.renderMathInElement || !cardRef.current) return;
-
-    renderMathInElement(cardRef.current, {
-      delimiters: [
-        { left: "$$", right: "$$", display: true },
-        { left: "\\(", right: "\\)", display: false },
-      ],
-      throwOnError: false,
-    });
-  };
 
   useEffect(() => {
     const el = cardRef.current;
@@ -82,7 +73,7 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
               duration: 0.3,
               ease: "elastic.out(1, 0.6)",
             });
-            setTimeout(reRenderMath, 0);
+            // setTimeout(reRenderMath, 0);
           },
         },
       })
@@ -97,14 +88,9 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
   }, [isFlipped, cardData.front, cardData.back]);
 
   useEffect(() => {
-    reRenderMath();
-  }, []);
-
-  useEffect(() => {
-    reRenderMath(); // On flip or content change
   }, [isFlipped, cardData.front, cardData.back]);
 
-  const renderContent = (text, imagePath, ref, equationText) => {
+  const renderContent = (text, imagePath, ref, equationText, codeText) => {
     return (
       <div
         ref={ref}
@@ -112,32 +98,45 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
       >
         {imagePath && (
           <img
-            src={imagePath}
+            src={`http://localhost:5678/images/${imagePath}`}
             alt="Flashcard Visual"
             className="max-w-full max-h-52 object-contain mx-auto"
           />
         )}
-        <div className="w-full flex flex-col gap-1 text-white p-2">
+        <div className="w-full flex flex-col gap-2 text-white p-2">
           <div
-            className="prose text-right whitespace-pre-wrap"
+            className="prose whitespace-pre-wrap text-left"
             dangerouslySetInnerHTML={{ __html: text }}
           />
+
+          {codeText && (
+            <div
+              className="relative bg-base-200 text-left text-base-content rounded-lg p-2 mt-2 
+               text-sm overflow-x-auto overflow-y-auto max-h-40 font-mono 
+               subpixel-antialiased leading-snug"
+            >
+              <pre className="whitespace-pre-wrap">
+                <code>{codeText}</code>
+              </pre>
+              <button
+                onClick={() => navigator.clipboard.writeText(codeText)}
+                className="btn btn-xs btn-outline absolute top-1 right-1"
+              >
+                Copy
+              </button>
+            </div>
+          )}
+
           {equationText && (
             <div
-              className="overflow-x-auto text-right mt-1"
-              style={{ fontSize: "0.85em" }}
-            >
-              {equationText && (
-                <div
-                  className="overflow-x-auto text-right mt-1"
-                  style={{ fontSize: "0.85em" }}
-                >
-                  <div className="inline-block px-2 katex-render-target">
-                    {equationText}
-                  </div>
-                </div>
-              )}
-            </div>
+              className="overflow-x-auto text-center mt-1 text-sm"
+              dangerouslySetInnerHTML={{
+                __html: katex.renderToString(equationText, {
+                  throwOnError: false,
+                  displayMode: true,
+                }),
+              }}
+            />
           )}
         </div>
       </div>
@@ -164,7 +163,7 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
         }}
       >
         <div
-          className="absolute inset-0 rounded-[35px] p-4 text-white text-center bg-opacity-90 overflow-hidden"
+          className="absolute inset-0 rounded-[35px] p-4 text-white text-center bg-opacity-90 overflow-hidden shadow-lg"
           style={{
             fontSize: `${cardData.fontSize_front}px`,
             backgroundColor: cardData.bg_color,
@@ -182,7 +181,7 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
         </div>
 
         <div
-          className="absolute inset-0 rounded-[35px] p-4 text-white text-center bg-opacity-90 overflow-hidden"
+          className="absolute inset-0 rounded-[35px] p-4 text-white text-center bg-opacity-90 overflow-hidden shadow-lg"
           style={{
             fontSize: `${cardData.fontSize_back}px`,
             backgroundColor: cardData.bg_color,
@@ -195,7 +194,8 @@ export default function FlashCard({ card, index, onDragStart, onDragEnd }) {
             cardData.back,
             cardData.imageBack,
             backRef,
-            cardData.equationBack
+            cardData.equationBack,
+            cardData.code
           )}
         </div>
       </div>

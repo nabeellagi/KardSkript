@@ -26,3 +26,5 @@ pnpm-debug.log*
 image_server/venv/
 image_server/__pycache__/
 image_server/images/
+image_server/dist/
+image_server/build/

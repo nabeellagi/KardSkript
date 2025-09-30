@@ -1,0 +1,160 @@
+---
+import Board from "../../../components/Board";
+import DocLayout from "../../../layouts/DocLayout.astro";
+import CodeSnippet from "../../../components/CodeSnippet.jsx";
+
+var code3 = `flash({
+  front: "Vector notation in math",
+  back: "A vector is written as a column or row of numbers.",
+  equationBack: \`\\vec{v} = \\begin{bmatrix} v_1 \\\\ v_2 \\\\ v_3 \\end{bmatrix}\`
+})
+
+flash({
+  front: "What is a vector in NumPy?",
+  back: "A 1D array representing a mathematical vector.",
+  code: \`import numpy as np
+
+vector_a = np.array([1, 2, 3])
+vector_b = np.array([4, 5, 6])
+
+print("Vector A:", vector_a)
+print("Vector B:", vector_b)\`
+})
+
+flash({
+  front: "How to create a matrix in NumPy?",
+  back: "Use a 2D array to represent a matrix.",
+  code: \`import numpy as np
+
+matrix_a = np.array([[1, 2], [3, 4]])
+matrix_b = np.array([[5, 6], [7, 8]])
+
+print("Matrix A:\\\\n", matrix_a)
+print("Matrix B:\\\\n", matrix_b)\`
+})
+
+flash({
+  front: "What is an identity matrix?",
+  back: "A square matrix with ones on the diagonal and zeros elsewhere.",
+  code: \`import numpy as np
+
+identity_matrix = np.identity(3)
+print("Identity Matrix:\\\\n", identity_matrix)\`
+})
+
+flash({
+  front: "What is a diagonal matrix?",
+  back: "A matrix with non-zero values only on the diagonal.",
+  code: \`import numpy as np
+
+diagonal_matrix = np.diag([1, 2, 3])
+print("Diagonal Matrix:\\\\n", diagonal_matrix)\`
+})
+
+flash({
+  front: "What is a zero matrix?",
+  back: "A matrix with all elements equal to zero.",
+  code: \`import numpy as np
+
+zero_matrix = np.zeros((3, 3))
+print("Zero Matrix:\\\\n", zero_matrix)\`,
+  y:1000
+})
+
+flash({
+  front: "Matrix multiplication rule",
+  back: "If A is an m×n matrix and B is an n×p matrix, then AB is an m×p matrix.",
+  equationBack: \`(AB)_{ij} = \\sum_{k=1}^{n} A_{ik} B_{kj}\`
+})`;
+---
+
+<DocLayout title="Code and KaTeX Support">
+  <section id="CodeKaTeX" class="prose max-w-none text-base/9 mb-12">
+    <h2 class="text-2xl font-semibold">Using Code and Math in Flashcards</h2>
+
+    <p>
+      KardSkript isn’t just for text! You can add programming code snippets and
+      LaTeX-style math equations using <span class="font-semibold">KaTeX</span>.
+      This is perfect for students who want to practice math or coding directly
+      in their flashcards.
+    </p>
+
+    <ul class="list-decimal list-inside space-y-1 leading-tight">
+      <li>
+        Use the <code>code</code> property to embed syntax-highlighted code blocks.
+      </li>
+      <li>
+        Use the <code>equationBack</code> property to render KaTeX math equations.
+      </li>
+      <li>
+        Combine text, code, and math for powerful study cards in STEM subjects.
+      </li>
+    </ul>
+
+    <div class="border border-base rounded-lg p-4 mb-6 w-[60vw] overflow-x-hidden">
+      <CodeSnippet client:load code={code3} />
+      <Board
+        client:load
+        data={[
+          {
+            front: "Vector notation in math",
+            back: "A vector is written as a column or row of numbers.",
+            equationBack: `\\vec{v} = \\begin{bmatrix} v_1 \\\\ v_2 \\\\ v_3 \\end{bmatrix}`,
+          },
+          {
+            front: "What is a vector in NumPy?",
+            back: "A 1D array representing a mathematical vector.",
+            code: `import numpy as np
+
+vector_a = np.array([1, 2, 3])
+vector_b = np.array([4, 5, 6])
+
+print("Vector A:", vector_a)
+print("Vector B:", vector_b)`,
+          },
+          {
+            front: "How to create a matrix in NumPy?",
+            back: "Use a 2D array to represent a matrix.",
+            code: `import numpy as np
+
+matrix_a = np.array([[1, 2], [3, 4]])
+matrix_b = np.array([[5, 6], [7, 8]])
+
+print("Matrix A:\\n", matrix_a)
+print("Matrix B:\\n", matrix_b)`,
+          },
+          {
+            front: "What is an identity matrix?",
+            back: "A square matrix with ones on the diagonal and zeros elsewhere.",
+            code: `import numpy as np
+
+identity_matrix = np.identity(3)
+print("Identity Matrix:\\n", identity_matrix)`,
+          },
+          {
+            front: "What is a diagonal matrix?",
+            back: "A matrix with non-zero values only on the diagonal.",
+            code: `import numpy as np
+
+diagonal_matrix = np.diag([1, 2, 3])
+print("Diagonal Matrix:\\n", diagonal_matrix)`,
+          },
+          {
+            front: "What is a zero matrix?",
+            back: "A matrix with all elements equal to zero.",
+            code: `import numpy as np
+
+zero_matrix = np.zeros((3, 3))
+print("Zero Matrix:\\n", zero_matrix)`,
+            y: 1000,
+          },
+          {
+            front: "Matrix multiplication rule",
+            back: "If A is an m×n matrix and B is an n×p matrix, then AB is an m×p matrix.",
+            equationBack: `(AB)_{ij} = \\sum_{k=1}^{n} A_{ik} B_{kj}`,
+          },
+        ]}
+      />
+    </div>
+  </section>
+</DocLayout>

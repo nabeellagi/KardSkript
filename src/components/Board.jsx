@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useMemo } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import FlashCard from "./FlashCard";
 import Ripple from "./Ripple";
@@ -15,13 +15,47 @@ export default function Board({ data }) {
     const y = e.clientY - rect.top;
 
     const id = Date.now();
-
     setRipples((prev) => [...prev, { id, x, y }]);
   }, []);
 
   const handleRippleComplete = (id) => {
     setRipples((prev) => prev.filter((ripple) => ripple.id !== id));
   };
+
+  const processedCards = useMemo(() => {
+    if (!data) return [];
+
+    const manualCards = [];
+    const autoCards = [];
+
+    data.forEach((card, idx) => {
+      if (card.x != null && card.y != null) {
+        manualCards.push(card);
+      } else {
+        autoCards.push({ ...card, _originalIndex: idx });
+      }
+    });
+
+    // Grid layout for auto cards (5 per row)
+    const GRID_SPACING_X = 350; // horizontal spacing between cards
+    const GRID_SPACING_Y = 450; // vertical spacing
+    const START_X = 50;
+    const START_Y = 50;
+
+    const autoCardsWithPos = autoCards.map((card, i) => {
+      const row = Math.floor(i / 5);
+      const col = i % 5;
+      return {
+        ...card,
+        x: START_X + col * GRID_SPACING_X,
+        y: START_Y + row * GRID_SPACING_Y,
+      };
+    });
+
+    // Merge both categories back, preserving original order
+    const merged = [...manualCards, ...autoCardsWithPos];
+    return merged;
+  }, [data]);
 
   return (
     <div
@@ -40,7 +74,6 @@ export default function Board({ data }) {
         }}
       />
 
-      {/* 🌀 Zoomable content */}
       <TransformWrapper
         minScale={0.3}
         maxScale={3}
@@ -54,7 +87,7 @@ export default function Board({ data }) {
       >
         <TransformComponent wrapperClass="w-full h-full">
           <div className="relative z-10 w-[100vw] h-[100vh] select-none">
-            {(data || []).map((card, index) => (
+            {processedCards.map((card, index) => (
               <FlashCard
                 key={index}
                 card={card}

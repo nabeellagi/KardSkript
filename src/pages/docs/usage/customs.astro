@@ -1,0 +1,70 @@
+---
+import Board from "../../../components/Board";
+import DocLayout from "../../../layouts/DocLayout.astro";
+import CodeSnippet from "../../../components/CodeSnippet.jsx";
+
+var code2 = `flash({
+  front : "<h2 class='text-xl font-bold text-blue-600'>Hello, KardSkript!</h2>",
+  back : "<p class='text-green-600'>You can use <b>HTML</b> and <i>Tailwind</i> here!</p>",
+  bg_color : "#fef3c7", // soft yellow
+})
+
+flash({
+  front : "<p class='text-pink-500'>✨ Styling is fun!</p>",
+  back : "<ul class='list-disc list-inside text-sm text-gray-700'>
+            <li>Use colors</li>
+            <li>Add fonts</li>
+            <li>Experiment freely</li>
+          </ul>",
+  bg_color : "#e0f2fe", // light sky blue
+})`;
+---
+
+<DocLayout title="HTML + Tailwind support!">
+<section id="StylingBasics" class="max-w-none text-base/9 mb-12">
+  <h2 class="text-2xl font-semibold">Adding Styles & HTML</h2>
+
+  <p>
+    Flashcards don't have to be plain text! KardSkript supports
+    <span class="font-semibold">HTML tags</span> and
+    <span class="font-semibold">Tailwind CSS classes</span>, so you can
+    experiment with different looks and layouts.
+  </p>
+
+  <ul class="list-decimal pl-8 space-y-1 leading-tight text-base">
+    <li>
+      Wrap your text in simple HTML like <code>&lt;h2&gt;</code> or <code
+        >&lt;p&gt;</code
+      >.
+    </li>
+    <li>
+      Add Tailwind classes such as <code>text-blue-600</code> or <code
+        >font-bold</code
+      >.
+    </li>
+    <li>Combine it with <code>bg_color</code> for colorful cards.</li>
+  </ul>
+
+  <div
+    class="border border-base rounded-lg p-4 mb-6 w-[60vw] overflow-x-hidden"
+  >
+    <CodeSnippet client:load code={code2} />
+    <Board
+      client:load
+      data={[
+        {
+          front:
+            "<h2 class='text-xl font-bold text-blue-600'>Hello, KardSkript!</h2>",
+          back: "<p class='text-green-600'>You can use <b>HTML</b> and <i>Tailwind</i> here!</p>",
+          bg_color: "#fef3c7",
+        },
+        {
+          front: "<p class='text-pink-500'>✨ Styling is fun!</p>",
+          back: "<ul class='list-disc list-inside text-sm text-gray-700'><li>Use colors</li><li>Add fonts</li><li>Experiment freely</li></ul>",
+          bg_color: "#e0f2fe",
+        },
+      ]}
+    />
+  </div>
+</section>
+</DocLayout>

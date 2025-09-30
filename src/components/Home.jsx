@@ -16,8 +16,14 @@ import "../styles/global.css";
 
 const defaultCode = `
 flash({
-    front : "What is a computer?",
-    back : "computer is a device?"
+    front : "Hello!",
+    back : "World!",
+})
+    
+flash({
+    front : "Start making!",
+    back : "World!",
+    bg_color : "#652dffff",
 })`;
 
 export default function HomePage() {
@@ -210,7 +216,7 @@ export default function HomePage() {
               className="text-lg md:text-xl text-white/80 font-medium"
             >
               Introducing{" "}
-              <span className="text-secondary font-bold">KardSkrip</span> — a
+              <span className="text-secondary font-bold">KardSkript</span> — a
               beautifully simple, script-based flashcard tool to help you learn,
               create, and share knowledge.
             </p>
@@ -277,9 +283,15 @@ export default function HomePage() {
                 <FaRocket className="mr-2" /> Run
               </button>
 
-              <button className="btn btn-outline btn-secondary btn-lg hover:scale-105 transition-transform duration-300 flex items-center">
+              <a
+                href="/docs/welcome"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline btn-secondary btn-lg hover:scale-105 transition-transform duration-300 flex items-center"
+              >
                 <FaBookOpen className="mr-2" /> Learn More
-              </button>
+              </a>
+
               <button
                 onClick={handleDownload}
                 className="btn btn-accent btn-lg shadow-lg hover:shadow-accent hover:scale-105 transition-transform duration-300 flex items-center"
@@ -287,7 +299,10 @@ export default function HomePage() {
                 <FaDownload className="mr-2" /> Download
               </button>
             </div>
-            <p className="text-sm text-gray-400 mt-2">
+            <p className="text-lg text-center m-4 text-white mt-2">
+                DRAG THE BOARD, ZOOM IN AND OUT!
+            </p>
+            {/* <p className="text-sm text-gray-400 mt-2">
               {output ? (
                 <pre className="bg-black/70 p-4 rounded text-left overflow-auto text-green-300 text-xs">
                   {output.error
@@ -297,7 +312,7 @@ export default function HomePage() {
               ) : (
                 "Click 'Run' to parse your script!"
               )}
-            </p>
+            </p> */}
           </section>
         </>
         <section

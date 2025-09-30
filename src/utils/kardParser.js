@@ -19,11 +19,8 @@ export function parseKardScript(script) {
         // It's a string or backtick
         key = propMatch[1];
         const rawString = propMatch[3] || propMatch[4];
-        value = rawString
-          .split("\n")
-          .map((line) => line.trim())
-          .filter(Boolean)
-          .join("\n");
+
+        value = rawString;
       } else if (propMatch[5]) {
         // It's a number
         key = propMatch[5];
