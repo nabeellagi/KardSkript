@@ -1,47 +1,41 @@
-# Astro Starter Kit: Minimal
+# KardSkript
 
-```sh
-npm create astro@latest -- --template minimal
-```
+KardSkript is an interactive flashcard application that combines the simplicity of traditional flashcards with the flexibility of scripting.  
+Think of it as **Anki + scripting**: every line of code you write generates flashcards that can be displayed, dragged, zoomed, and customized on the board.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+🚀 **Demo:** [kardskrip.netlify.app](https://kardskrip.netlify.app/)
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+---
 
-## 🚀 Project Structure
+## Features
 
-Inside of your Astro project, you'll see the following folders and files:
+- Create flashcards using simple scripting
+- Zoom and drag flashcards on the board
+- Math formula rendering with **KaTeX**
+- Code and HTML block support
+- Image support *(coming soon)*
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+---
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 🛠 Getting Started
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+You can try KardSkript in two ways:
 
-Any static assets, like images, can be placed in the `public/` directory.
+### 1. Online Demo
+Visit [kardskrip.netlify.app](https://kardskrip.netlify.app/) to explore KardSkript without installation.
 
-## 🧞 Commands
+### 2. Run Locally
+Clone the repository and run it on your machine:
 
-All commands are run from the root of the project, from a terminal:
+```bash
+# Clone the repository
+git clone https://github.com/nabeellagi/KardSkript.git
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+# Navigate into the project
+cd kardskript
 
-## 👀 Want to learn more?
+# Install dependencies
+npm install
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+# Run the development server
+npm run dev
